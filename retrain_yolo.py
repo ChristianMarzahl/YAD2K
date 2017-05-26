@@ -7,16 +7,31 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
-import PIL
+import pickle
+from PIL import Image
 import tensorflow as tf
 from keras import backend as K
 from keras.layers import Input, Lambda, Conv2D
 from keras.models import load_model, Model
 from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
+from keras.preprocessing.image import Iterator
 
 from yad2k.models.keras_yolo import (preprocess_true_boxes, yolo_body,
                                      yolo_eval, yolo_head, yolo_loss)
 from yad2k.utils.draw_boxes import draw_boxes
+
+#class ImageDataGenerator(Iterator):
+
+#    def __init__(self, data_path, batch_size, shuffle, seed):
+
+#        with open(data_path, mode='rb') as f:
+#            data = pickle.load(f)
+
+
+
+#        return super().__init__(n, batch_size, shuffle, seed)
+
+
 
 # Args
 argparser = argparse.ArgumentParser(
@@ -26,19 +41,19 @@ argparser.add_argument(
     '-d',
     '--data_path',
     help="path to numpy data file (.npz) containing np.object array 'boxes' and np.uint8 array 'images'",
-    default=os.path.join('..', 'DATA', 'underwater_data.npz'))
+    default=os.path.join('model_data', 'Hep', 'train_images_yolo.p'))
 
 argparser.add_argument(
     '-a',
     '--anchors_path',
     help='path to anchors file, defaults to yolo_anchors.txt',
-    default=os.path.join('model_data', 'yolo_anchors.txt'))
+    default=os.path.join('model_data',"Hep", 'yolo_anchors.txt'))
 
 argparser.add_argument(
     '-c',
     '--classes_path',
     help='path to classes file, defaults to pascal_classes.txt',
-    default=os.path.join('..', 'DATA', 'underwater_classes.txt'))
+    default=os.path.join('model_data', 'Hep', 'hep_classes.txt'))
 
 # Default anchor boxes
 YOLO_ANCHORS = np.array(
@@ -53,7 +68,8 @@ def _main(args):
     class_names = get_classes(classes_path)
     anchors = get_anchors(anchors_path)
 
-    data = np.load(data_path) # custom data saved as a numpy file.
+    with open(data_path, mode='rb') as f:
+        data = pickle.load(f) # custom data saved as a numpy file.
     #  has 2 arrays: an object array 'boxes' (variable length of boxes in each image)
     #  and an array of images 'images'
 
@@ -104,12 +120,12 @@ def get_anchors(anchors_path):
 
 def process_data(images, boxes=None):
     '''processes the data'''
-    images = [PIL.Image.fromarray(i) for i in images]
+    images = [Image.open(i).convert('RGB') for i in images]
     orig_size = np.array([images[0].width, images[0].height])
     orig_size = np.expand_dims(orig_size, axis=0)
 
     # Image preprocessing.
-    processed_images = [i.resize((416, 416), PIL.Image.BICUBIC) for i in images]
+    processed_images = [i.resize((416, 416), Image.BICUBIC) for i in images]
     processed_images = [np.array(image, dtype=np.float) for image in processed_images]
     processed_images = [image/255. for image in processed_images]
 
@@ -243,17 +259,19 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
         })  # This is a hack to use the custom loss function in the last layer.
 
 
-    logging = TensorBoard()
-    checkpoint = ModelCheckpoint("trained_stage_3_best.h5", monitor='val_loss',
+    logging = TensorBoard(log_dir="log")
+    checkpoint = ModelCheckpoint("log/models/trained_stage_3_best.h5", monitor='val_loss',
                                  save_weights_only=True, save_best_only=True)
     early_stopping = EarlyStopping(monitor='val_loss', min_delta=0, patience=15, verbose=1, mode='auto')
+
+
 
     model.fit([image_data, boxes, detectors_mask, matching_true_boxes],
               np.zeros(len(image_data)),
               validation_split=validation_split,
               batch_size=32,
-              epochs=5,
-              callbacks=[logging])
+              epochs=100,
+              callbacks=[logging,checkpoint])
     model.save_weights('trained_stage_1.h5')
 
     model_body, model = create_model(anchors, class_names, load_pretrained=False, freeze_body=False)
@@ -270,7 +288,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
               np.zeros(len(image_data)),
               validation_split=0.1,
               batch_size=8,
-              epochs=30,
+              epochs=4*30,
               callbacks=[logging])
 
     model.save_weights('trained_stage_2.h5')
@@ -279,7 +297,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
               np.zeros(len(image_data)),
               validation_split=0.1,
               batch_size=8,
-              epochs=30,
+              epochs=4*30,
               callbacks=[logging, checkpoint, early_stopping])
 
     model.save_weights('trained_stage_3.h5')
@@ -331,7 +349,7 @@ def draw(model_body, class_names, anchors, image_data, image_set='val',
                                     class_names, out_scores)
         # Save the image:
         if save_all or (len(out_boxes) > 0):
-            image = PIL.Image.fromarray(image_with_boxes)
+            image = Image.fromarray(image_with_boxes)
             image.save(os.path.join(out_path,str(i)+'.png'))
 
         # To display (pauses the program):

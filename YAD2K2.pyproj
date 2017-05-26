@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2a3f5acf-36ed-4726-b2a3-050a66ae89ce}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>retrain_yolo.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>Global|PythonCore|3.5</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="retrain_yolo.py" />
+    <Compile Include="test_yolo.py" />
+    <Compile Include="train_overfit.py" />
+    <Compile Include="voc_conversion_scripts\hep_to_hdf5.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="voc_conversion_scripts\test_tep_to_hdf5.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="voc_conversion_scripts\voc_to_hdf5.py" />
+    <Compile Include="voc_conversion_scripts\voc_to_tfrecords.py" />
+    <Compile Include="yad2k.py" />
+    <Compile Include="yad2k\models\keras_darknet19.py" />
+    <Compile Include="yad2k\models\keras_yolo.py" />
+    <Compile Include="yad2k\models\__init__.py" />
+    <Compile Include="yad2k\utils\draw_boxes.py" />
+    <Compile Include="yad2k\utils\utils.py" />
+    <Compile Include="yad2k\utils\__init__.py" />
+    <Compile Include="yad2k\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="etc\dog_small.jpg" />
+    <Content Include="etc\yolo.png" />
+    <Content Include="font\SIL Open Font License.txt" />
+    <Content Include="images\dog.jpg" />
+    <Content Include="images\eagle.jpg" />
+    <Content Include="images\giraffe.jpg" />
+    <Content Include="model_data\Hep\train_images_yolo.p" />
+    <Content Include="images\horses.jpg" />
+    <Content Include="images\person.jpg" />
+    <Content Include="images\scream.jpg" />
+    <Content Include="model_data\COCO\coco_classes.txt" />
+    <Content Include="model_data\COCO\yolo.cfg" />
+    <Content Include="model_data\COCO\yolo.h5" />
+    <Content Include="model_data\COCO\yolo.weights" />
+    <Content Include="model_data\COCO\yolo_anchors.txt" />
+    <Content Include="model_data\coco_classes.txt" />
+    <Content Include="model_data\Pascal\pascal_classes.txt" />
+    <Content Include="model_data\Pascal\yolo.cfg" />
+    <Content Include="model_data\Pascal\yolo.h5" />
+    <Content Include="model_data\Pascal\yolo.weights" />
+    <Content Include="model_data\Pascal\yolo_anchors.txt" />
+    <Content Include="model_data\pascal_classes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="etc" />
+    <Folder Include="font" />
+    <Folder Include="images" />
+    <Folder Include="images\Hep\" />
+    <Folder Include="log\models\" />
+    <Folder Include="model_data" />
+    <Folder Include="model_data\COCO\" />
+    <Folder Include="model_data\Hep\" />
+    <Folder Include="model_data\Pascal\" />
+    <Folder Include="log\" />
+    <Folder Include="voc_conversion_scripts" />
+    <Folder Include="yad2k" />
+    <Folder Include="yad2k\models" />
+    <Folder Include="yad2k\utils" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|PythonCore|3.5" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>

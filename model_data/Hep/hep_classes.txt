@@ -1,0 +1,7 @@
+homogeneous
+speckled
+nucleolar
+centromere
+golgi
+numem
+mitsp

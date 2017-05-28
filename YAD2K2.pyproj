@@ -68,6 +68,8 @@
     <Folder Include="font" />
     <Folder Include="images" />
     <Folder Include="images\Hep\" />
+    <Folder Include="images\Hep\Validation\" />
+    <Folder Include="images\Hep\Training\" />
     <Folder Include="log\models\" />
     <Folder Include="model_data" />
     <Folder Include="model_data\COCO\" />

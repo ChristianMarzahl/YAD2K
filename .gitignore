@@ -106,3 +106,4 @@ ENV/
 YOLO_Hep.hdf5
 model_data/Hep/train_images_yolo.p
 model_data/Hep/validation_images_yolo.p
+YAD2K2.zip

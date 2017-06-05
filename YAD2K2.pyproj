@@ -22,6 +22,12 @@
     <Compile Include="retrain_yolo.py" />
     <Compile Include="test_yolo.py" />
     <Compile Include="train_overfit.py" />
+    <Compile Include="utils\ImageDataGeneratorXML.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="utils\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="voc_conversion_scripts\hep_to_hdf5.py">
       <SubType>Code</SubType>
     </Compile>
@@ -76,6 +82,7 @@
     <Folder Include="model_data\Hep\" />
     <Folder Include="model_data\Pascal\" />
     <Folder Include="log\" />
+    <Folder Include="utils\" />
     <Folder Include="voc_conversion_scripts" />
     <Folder Include="yad2k" />
     <Folder Include="yad2k\models" />

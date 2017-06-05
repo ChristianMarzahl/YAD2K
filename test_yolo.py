@@ -16,24 +16,26 @@ from yad2k.models.keras_yolo import yolo_eval, yolo_head
 parser = argparse.ArgumentParser(
     description='Run a YOLO_v2 style detection model on test images..')
 parser.add_argument(
-    'model_path',
+    '-m',
+    '--model_path',
     help='path to h5 model file containing body'
-    'of a YOLO_v2 model')
+    'of a YOLO_v2 model',
+    default='trained_stage_3.h5')
 parser.add_argument(
     '-a',
     '--anchors_path',
     help='path to anchors file, defaults to yolo_anchors.txt',
-    default='model_data/yolo_anchors.txt')
+    default='model_data/COCO/yolo_anchors.txt')
 parser.add_argument(
     '-c',
     '--classes_path',
     help='path to classes file, defaults to coco_classes.txt',
-    default='model_data/coco_classes.txt')
+    default='model_data/array_classes.txt')
 parser.add_argument(
     '-t',
     '--test_path',
     help='path to directory of test images, defaults to images/',
-    default='images')
+    default='C:/Users/Bronzi/Downloads/Train')
 parser.add_argument(
     '-o',
     '--output_path',
@@ -115,6 +117,10 @@ def _main(args):
         iou_threshold=args.iou_threshold)
 
     for image_file in os.listdir(test_path):
+
+        if image_file.endswith(".xml"):
+            continue
+
         try:
             image_type = imghdr.what(os.path.join(test_path, image_file))
             if not image_type:
